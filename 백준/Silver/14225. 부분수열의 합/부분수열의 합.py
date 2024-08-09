@@ -1,18 +1,14 @@
-import sys
-
-input = sys.stdin.readline
-
 n = int(input())
-lst = list(map(int, input().split()))
-lst.sort()
+sequence = list(map(int, input().split()))
 
-lst_sum = 0
-for i in lst:
-    if i > lst_sum + 1:
-        print(lst_sum + 1)
+# 1. 정렬하기
+sequence.sort()
+
+# 2. 지금까지 더한 것보다, 이후 숫자가 1차이보다 크다면? 연결안됨
+total = 0
+for elem in sequence:
+    if elem > total + 1:
         break
-    else:
-        lst_sum += i
+    total += elem
 
-else:
-    print(lst_sum + 1)
+print(total + 1)
