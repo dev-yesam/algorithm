@@ -1,43 +1,28 @@
 import sys
+
 input = sys.stdin.readline
-
+ans =[]
 n = int(input())
-stack =[0]
-lst = []
-
-
-num = 1
+stack = []
 answer = True
+start= 1
 for _ in range(n):
-    x = int(input())
-    # 가능하면 +, - 로 출력
+    num = int(input())
 
+    while start <= num:
+        stack.append(start)
+        ans.append('+')
+        start += 1
 
+    if stack[-1] == num:
+        stack.pop()
+        ans.append('-')
+    else:
+        answer = False
 
-    while num < x:
-        # x 보다 작을 때
-        stack.append(num)
-        lst.append('+')
-        num += 1
-
-
-    # x 와 같을 때
-    if num == x:
-        lst.append('+')
-        lst.append('-')
-        num +=1
-
-    # x 보다 클 때
-    elif num > x:
-        if stack[-1] == x:
-            lst.append('-')
-            stack.pop()
-        else:
-            answer = False
-            break
-
-if answer:
-    for i in lst:
-        print(i)
+if not answer:
+    print('NO')
 else:
-    print("NO")
+    for l in ans:
+        print(l)
+
