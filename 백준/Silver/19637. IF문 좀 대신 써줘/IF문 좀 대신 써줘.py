@@ -1,29 +1,32 @@
 import sys
-
 input = sys.stdin.readline
 
-name_num, power_num = map(int, input().strip().split())
-names = [input().strip().split() for _ in range(name_num)]
-names = [(x, int(y)) for x, y in names]
+# n 이 10만? nlogn 정도는 됨. 160만이니까.
 
-# power 마다, names에서 알맞은 거 찾으면 됨.
-# power보다 크거나 같으면서 인덱스는 가장 작은거 -1
+chingho_num, character_num = map(int, input().split())
+chingho_lst = []
+for _ in range(chingho_num):
+    chingho, power = input().split()
+    power = int(power)
+    chingho_lst.append((chingho, power))
 
-for _ in range(power_num):
-    power = int(input())
+for _ in range(character_num):
 
+    character_power = int(input())
+
+    # 이진 탐색
     start = 0
-    end = name_num - 1
-    answer = -1
+    end = chingho_num-1
+    ans = 0
     while start <= end:
-
         mid = (start + end) // 2
-
-        if names[mid][1] >= power:
+        if chingho_lst[mid][1] >= character_power:
             end = mid - 1
-            answer = names[mid][0]
-
+            ans = mid
         else:
             start = mid + 1
 
-    print(answer)
+    print(chingho_lst[ans][0])
+
+
+
