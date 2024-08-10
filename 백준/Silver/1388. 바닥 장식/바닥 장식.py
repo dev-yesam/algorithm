@@ -1,31 +1,33 @@
-import sys
+n, m = map(int, input().split())
+lst = [input() for _ in range(n)]
 
-input = sys.stdin.readline
-length, width = map(int, input().split())
-
-floor = list()
-for _ in range(length):
-    floor.append(list(input().rstrip()))
-
-visited = [[0] * width for _ in range(length)]
+count = 0
 
 
-def dfs(graph, row, col):
-    visited[row][col] = 1
+def dfs(x, y, visited, tile):
+    # 방문처리
+    visited[x][y] = 1
 
-    if graph[row][col] == '-':
-        if col + 1 < width and graph[row][col + 1] == '-' and visited[row][col + 1] == 0:
-            dfs(graph, row, col + 1)
+    # 재귀호출
+    if tile == "-":
+        nx, ny = x, y + 1
+        if ny < m and tile == lst[nx][ny]:
+            dfs(nx, ny, visited, tile)
     else:
-        if row + 1 < length and graph[row + 1][col] == '|' and visited[row + 1][col] == 0:
-            dfs(graph, row + 1, col)
+        nx, ny  = x + 1, y
+        if nx < n and tile == lst[nx][ny]:
+            dfs(nx, ny, visited, tile)
 
 
-cnt = 0
-for i in range(length):
-    for j in range(width):
-        if visited[i][j] == 0:
-            cnt += 1
-            dfs(floor, i, j)
+# 2종류의 dfs로 하면 되지 않을까? => 1종류도 충분
+visited = [[0] * (m + 1) for _ in range(n)]
 
-print(cnt)
+# 방문 ㄱㄱ
+for i in range(n):
+    for j in range(m):
+        if not visited[i][j]:
+            count += 1
+            dfs(i, j, visited, lst[i][j])
+
+# 출력
+print(count)
