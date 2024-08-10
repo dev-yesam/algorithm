@@ -1,24 +1,26 @@
-### 테스트 용 ###
+n, m = map(int, input().split())
+lst = list(map(int, input().split()))
+lst.sort()
 
-N, M = map(int, input().split())
-L = list(map(int, input().split()))
+answer = []
+visited = [0] * (n + 1)
 
-L.sort()
-visited = [False] * N
-out = []
 
-def solve(depth, N, M):
-    if depth == M:
-        print(' '.join(map(str, out)))
+def backtrack(lst, level):
+    if level == m:
+        print(*answer)
         return
-    overlap = 0
-    for i in range(N):
-        if not visited[i] and overlap != L[i]:
-            visited[i] = True
-            out.append(L[i])
-            overlap = L[i]
-            solve(depth+1, N, M)
-            visited[i] = False
-            out.pop()
 
-solve(0, N, M)
+    prev = 0
+    for idx in range(n):
+        if lst[idx] == prev or visited[idx]:
+            continue
+        prev = lst[idx]
+        answer.append(lst[idx])
+        visited[idx] = 1
+        backtrack(lst, level + 1)
+        answer.pop()
+        visited[idx] = 0
+
+
+backtrack(lst, 0)
