@@ -1,18 +1,15 @@
 t = int(input())
 for tc in range(1, t + 1):
-    rooms = [0] * 401
     n = int(input())
+    lst = [0] * 201
+    answer = -1
     for _ in range(n):
-        s, e = map(int, input().split())
+        start, end = map(int, input().split())
+        start, end = (start+1) // 2, (end+1) // 2
+        if start > end:
+            start, end = end, start
+        for s in range(start, end + 1):
+            lst[s] += 1
 
-        if s % 2 == 0: s -= 1
-        if e % 2 == 0: e -= 1
-        if s > e:
-            s, e = e, s
-
-        for room in range(s, e + 1):
-            rooms[room] += 1
-
-    print(f'#{tc}', max(rooms))
-    # print(rooms)
-
+    answer = max(lst)
+    print(f'#{tc}', answer)
