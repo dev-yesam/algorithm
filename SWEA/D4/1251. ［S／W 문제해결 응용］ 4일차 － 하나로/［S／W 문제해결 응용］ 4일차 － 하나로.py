@@ -1,45 +1,45 @@
 from heapq import heappush, heappop
 
 
-# 최소 신장 트리 문제
-# 간선 수가 많을 수 있으니 프림
-
 def prim(start):
-    visited = [0] * n
-    heap = []
-    heappush(heap, (0, start))
-    total = 0
+    pq = []
+    mst = [0] * n
+    e_price = 0
+    heappush(pq, (0, start))
     cnt = 0
-    # 방문 예약
-    while heap:
-        weight, now = heappop(heap)
 
-        # 이미 방문한 적 있다면
-        if visited[now]:
+    while pq:
+        weight, now = heappop(pq)
+
+        # 방문했던 곳인지
+        if mst[now]:
             continue
 
-        visited[now] = 1
-        total += weight
+        # 방문처리
+        mst[now] = 1
+        e_price += weight
 
+        # 최적화
         cnt += 1
-        if cnt == n: break  # 최적화
+        if cnt == n:
+            break
 
+        # 다음 방문
         for next in range(n):
-            if not visited[next]:
-                dist = (x_lst[now] - x_lst[next]) ** 2 + (y_lst[now] - y_lst[next]) ** 2
-                heappush(heap, (dist*e, next))
+            if mst[next]:
+                continue
+            new_weight = e * ((x_lst[next] - x_lst[now]) ** 2 + (y_lst[next] - y_lst[now]) ** 2)
+            heappush(pq, (new_weight, next))
 
-    return total
+    return e_price
 
 
 t = int(input())
 for tc in range(1, t + 1):
-    n = int(input())
-    x_lst = list(map(int, input().split()))
-    y_lst = list(map(int, input().split()))
-    e = float(input())
+    n = int(input())  # 섬 개수
+    x_lst = list(map(int, input().split()))  # 섬 좌표
+    y_lst = list(map(int, input().split()))  # 섬 좌표
+    e = float(input())  # 세율
 
-    # 최소 환경 부담금
     ans = prim(0)
-
     print(f'#{tc}', round(ans))
