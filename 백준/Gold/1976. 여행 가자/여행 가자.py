@@ -1,43 +1,53 @@
+def make_set(N):
+    return [i for i in range(N + 1)]
+
+
 def find_set(x):
-    if x == p[x]:
-        return x
-    else:
-        p[x] = find_set(p[x])
-        return p[x]
+    if parents[x] == x:
+        return x  # 자기 자신이 대표
+
+    # 경로 압축
+    parents[x] = find_set(parents[x])
+    return parents[x]
 
 
-def union(x, y):
+def union_set(x, y):
     x = find_set(x)
     y = find_set(y)
 
+    # 같아?
     if x == y:
-        return
+        return  # 암것도 안함
 
-    if x < y:
-        p[y] = x
+    if rank[x] > rank[y]:
+        parents[y] = x
+
+    elif rank[x] < rank[x]:
+        parents[x] = y
+
     else:
-        p[x] = y
+        parents[y] = x
+        rank[x] += 1
 
 
-import sys
+n = int(input())  # 도시의 수 (그래프의 노드)
+m = int(input())  # 여행갈 도시의 수
+adjm = [list(map(int, input().split())) for _ in range(n)]
+tourist = list(map(int, input().split()))
 
-input = sys.stdin.readline
+parents = make_set(n)
+rank = [i for i in range(n + 1)]
 
-n = int(input())
-m = int(input())
-
-p = [i for i in range(n)]
+# 도로 연결하기
 for i in range(n):
-    lst = list(map(int, input().split()))
     for j in range(n):
-        if lst[j] == 1:
-            union(i, j)
+        if i > j and adjm[i][j]:
+            union_set(i+1, j+1)
 
-travels = list(map(int, input().split()))
-prev = find_set(travels[0]-1)
 ans = "YES"
-for i in range(1, len(travels)):
-    if prev != find_set(travels[i]-1):
+prev = find_set(tourist[0])
+for t in tourist[1:]:
+    if find_set(t) != prev:
         ans = "NO"
         break
 
