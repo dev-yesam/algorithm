@@ -1,46 +1,45 @@
 from heapq import heappush, heappop
-import sys
-input = sys.stdin.readline
+
 
 def dijkstra(start):
-    # 시작점
-    dists[start][start] = 0
     pq = []
-    heappush(pq, (0,start))
+    heappush(pq, (0, start))
+    dists[start][start] = 0
 
     while pq:
-        #꺼내기
-        dist, now = heappop(pq)
 
-        if dist > dists[start][now]:
+        # 꺼내기
+        distance, now_node = heappop(pq)
+
+        if distance > dists[start][now_node]:
             continue
 
-        for next_weight, next in adjl[now]:
-            next_dist = next_weight + dists[start][now]
-            if next_dist < dists[start][next]:
-                dists[start][next] = next_dist
-                heappush(pq, (next_dist, next))
+        for next_weight, next_node in adjl[now_node]:
+            new_distance = distance + next_weight
+
+            if new_distance >= dists[start][next_node]:
+                continue
+
+            dists[start][next_node] = new_distance
+            heappush(pq, (new_distance, next_node))
 
 
-# n 마을의 수 , m 간선의 수, x 목적지
 n, m, x = map(int, input().split())
 adjl = [[] for _ in range(n + 1)]
-for _ in range(m):
-    a, b, w = map(int, input().split())
-    adjl[a].append((w, b))
-    adjl[a].append((w, a))
 
-# 거리 2차원 배열
-INF = 200000
+for _ in range(m):
+    s, e, w = map(int, input().split())
+    adjl[s].append([w, e])
+    # adjl[e].append([w, s])
+
+INF = int(1e8)
 dists = [[INF] * (n + 1) for _ in range(n + 1)]
 
-# 다익스트라 2차원
-for i in range(1,n+1):
+for i in range(1, n + 1):
     dijkstra(i)
 
-# 최대 시간
-maxv = 0
-for i in range(1,n+1):
-    maxv = max(maxv, dists[i][x]+dists[x][i])
+ans_lst = [0]*(n+1)
+for i in range(1, n+1):
+    ans_lst[i] = dists[i][x] + dists[x][i]
 
-print(maxv)
+print(max(ans_lst))
