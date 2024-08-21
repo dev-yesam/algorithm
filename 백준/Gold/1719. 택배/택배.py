@@ -1,57 +1,47 @@
 from heapq import heappush, heappop
-import sys
-
-input = sys.stdin.readline
 
 
 def dijkstra(start):
-    # 시작점
-    tr[start][start] = '-'
-    dists = [INF] * (n + 1)
-    dists[start] =0
+    # 출발점
     pq = []
-    heappush(pq, (0, start))
+    dists = [INF] * (n + 1)
+    dists[start] = 0
+    heappush(pq, (0, start))  # 누적거리, 이전 노드
 
-    # 다음 방문 예약
+    # while
     while pq:
-        # 꺼내기
-        dist, now = heappop(pq)
+        now_dist, now_node = heappop(pq)
 
-        # 꺼냈는데 전보다 작다?
-        if dists[now] < dist:
+        if now_dist > dists[now_node]:
             continue
 
-        # 다음 방문
-        for next_weight, next in adjl[now]:
-            next_dist = dist + next_weight
-            if next_dist < dists[next]:
-                dists[next] = next_dist
-                heappush(pq, (next_dist, next))
+        for next_weight, next_node in adjl[now_node]:
+            next_dist = now_dist + next_weight
 
-                # 시작점에서 바로 갔다면?
-                if now == start:
-                    tr[start][next] = next
-                # now가 경유지라면?(그래서 뭐가 now에 들어있다면?)
-                elif tr[start][now]:
-                    tr[start][next] = tr[start][now]
+            if next_dist < dists[next_node]:
+                dists[next_node] = next_dist
+                heappush(pq, (next_dist, next_node))
 
+                # 직전 점이 시작점이라면?
+                if now_node == start:
+                    stopovers[start][next_node] = next_node
+                else:
+                    stopovers[start][next_node] = stopovers[start][now_node]
 
 
-
-n, m = map(int, input().split())  # 노드의 수, 간선의 수
+# n, m  = 집하장 개수, 경로의 수
+n, m = map(int, input().split())
 adjl = [[] for _ in range(n + 1)]
 for _ in range(m):
-    a, b, w = map(int, input().split())
-    adjl[a].append((w, b))
-    adjl[b].append((w, a))
+    s, e, w = map(int, input().split())
+    adjl[s].append((w, e))
+    adjl[e].append((w, s))
 
-tr = [[0] * (n + 1) for _ in range(n + 1)]  # 경로표
+INF = 210000
+stopovers = [["-"] * (n + 1) for _ in range(n + 1)]
 
-# 다익스트라 호출
-INF = 3000000
 for i in range(1, n + 1):
     dijkstra(i)
 
-# 출력
 for i in range(1, n + 1):
-    print(*tr[i][1:])
+    print(*stopovers[i][1:])
